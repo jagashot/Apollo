@@ -1,4 +1,6 @@
 import 'package:apollo_poc/widgets/buildDot.widgets.dart';
+import 'package:apollo_poc/widgets/buildHistoryView.widgets.dart';
+import 'package:apollo_poc/widgets/buildRecordView.widgets.dart';
 import 'package:apollo_poc/widgets/historyitem.widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -54,91 +56,9 @@ class _ApolloHomeState extends State<ApolloHome> {
                   });
                 },
                 children: [
-                  // History View for the first page
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 15,
-                    ),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ListView(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(
-                                  top: 50,
-                                  bottom: 20,
-                                ),
-                                child: const Text(
-                                  'History',
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              HistoryItem(),
-                              HistoryItem(),
-                              HistoryItem(),
-                              HistoryItem(),
-                              HistoryItem(),
-                              HistoryItem(),
-                              HistoryItem(),
-                              HistoryItem(),
-                              HistoryItem(),
-                              HistoryItem(),
-                              HistoryItem(),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // ----------------------------------------------------------------
-                  //Record View for the second page
-                  Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Tap to Record',
-                          style: TextStyle(color: Colors.white, fontSize: 20, decoration: TextDecoration.none),
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        GestureDetector(
-                          onTap: () => print("Yea!"),
-                          child: Material(
-                            shape: const CircleBorder(),
-                            elevation: 8,
-                            child: Container(
-                              padding: const EdgeInsets.all(40),
-                              height: 200,
-                              width: 200,
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(image:AssetImage('assets/photos/main_btn.png'), 
-                                fit: BoxFit.fill
-                                ),
-                                shape: BoxShape.circle,
-                                color: Color.fromARGB(255, 140, 80, 182),
-                              ),
-                              child: const Icon(
-                                Icons.mic,
-                                color: Colors.white,
-                                size: 100,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  buildHistoryView(),
+
+                  buildRecordView(context),
                   // ----------------------------------------------------------------
                   Container(
                     height: MediaQuery.of(context).size.height,
