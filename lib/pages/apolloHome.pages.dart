@@ -15,7 +15,7 @@ class ApolloHome extends StatefulWidget {
 
 class _ApolloHomeState extends State<ApolloHome> {
   int currentIndex = 1;
-  final PageController _controller = PageController(initialPage: 1); //Sets the initial page
+  final PageController _controller = PageController(initialPage: 1); // Sets the initial page
   Uint8List? _fileBytes; // Variable to hold the selected file bytes
   String? _fileName; // Variable to hold the selected file name
   String? _uploadStatus; // Variable to hold the upload status
@@ -32,7 +32,8 @@ class _ApolloHomeState extends State<ApolloHome> {
       body: Container(
         // background Image for the whole application
         decoration: const BoxDecoration(
-          image: DecorationImage(image: AssetImage('assets/photos/app_background.jpeg'),
+          image: DecorationImage(
+            image: AssetImage('assets/photos/app_background.jpeg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -47,18 +48,21 @@ class _ApolloHomeState extends State<ApolloHome> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(3, (index) => buildDot(currentIndex, index, context)),
             ),
-        // ----------------------------------------------------------------
+            // ----------------------------------------------------------------
             Expanded(
               child: PageView(
                 controller: _controller,
                 onPageChanged: (int index) {
                   setState(() {
                     currentIndex = index;
+                    if (index != 2) {
+                      // If not on the "Upload File" page, reset the upload status
+                      _uploadStatus = null;
+                    }
                   });
                 },
                 children: [
                   buildHistoryView(),
-
                   buildRecordView(context),
                   // ----------------------------------------------------------------
                   Container(
@@ -96,8 +100,9 @@ class _ApolloHomeState extends State<ApolloHome> {
                               height: 200,
                               width: 200,
                               decoration: const BoxDecoration(
-                                image: DecorationImage(image: AssetImage('assets/photos/main_btn.png'), 
-                                  fit: BoxFit.fill
+                                image: DecorationImage(
+                                  image: AssetImage('assets/photos/main_btn.png'),
+                                  fit: BoxFit.fill,
                                 ),
                                 shape: BoxShape.circle,
                                 color: Color.fromARGB(255, 140, 80, 182),
