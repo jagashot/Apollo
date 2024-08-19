@@ -1,7 +1,6 @@
 import 'package:apollo_poc/widgets/buildDot.widgets.dart';
 import 'package:apollo_poc/widgets/buildHistoryView.widgets.dart';
 import 'package:apollo_poc/widgets/buildRecordView.widgets.dart';
-import 'package:apollo_poc/widgets/historyitem.widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:typed_data';
