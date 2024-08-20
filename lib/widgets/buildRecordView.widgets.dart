@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:avatar_glow/avatar_glow.dart';
 
 Widget buildRecordView(BuildContext context) {
   //Record View for the second page
@@ -17,26 +18,33 @@ Widget buildRecordView(BuildContext context) {
         const SizedBox(
           height: 40,
         ),
-        GestureDetector(
-          onTap: () => print("Yea!"),
-          child: Material(
-            shape: const CircleBorder(),
-            elevation: 8,
-            child: Container(
-              padding: const EdgeInsets.all(40),
-              height: 200,
-              width: 200,
-              decoration: const BoxDecoration(
-                image: DecorationImage(image:AssetImage('assets/photos/main_btn.png'), 
-                fit: BoxFit.fill
+        AvatarGlow(
+          glowCount: 3,
+          glowRadiusFactor: 0.3,
+          //add state to the widget, turn off the animation when in another view
+          animate: true,
+          //----------------------------------------------------------------
+          child: GestureDetector(
+            onTap: () => print("Yea!"),
+            child: Material(
+              shape: const CircleBorder(),
+              elevation: 8,
+              child: Container(
+                padding: const EdgeInsets.all(40),
+                height: 200,
+                width: 200,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(image:AssetImage('assets/photos/main_btn.png'), 
+                  fit: BoxFit.fill
+                  ),
+                  shape: BoxShape.circle,
+                  color: Color.fromARGB(255, 140, 80, 182),
                 ),
-                shape: BoxShape.circle,
-                color: Color.fromARGB(255, 140, 80, 182),
-              ),
-              child: const Icon(
-                Icons.mic,
-                color: Colors.white,
-                size: 100,
+                child: const Icon(
+                  Icons.mic,
+                  color: Colors.white,
+                  size: 100,
+                ),
               ),
             ),
           ),
