@@ -4,6 +4,7 @@ import 'package:apollo_poc/widgets/buildRecordView.widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:typed_data';
+import 'dart:io';
 
 class ApolloHome extends StatefulWidget {
   const ApolloHome({super.key});
@@ -14,9 +15,10 @@ class ApolloHome extends StatefulWidget {
 
 class _ApolloHomeState extends State<ApolloHome> {
   int currentIndex = 1;
-  final PageController _controller = PageController(initialPage: 1); //Sets the initial page
-  Uint8List? _fileBytes; // Variable to hold the selected file bytes
+  final PageController _controller = PageController(initialPage: 1); // Sets the initial page
+  Future<Uint8List>? _fileBytes; // Variable to hold the selected file bytes
   String? _fileName; // Variable to hold the selected file name
+  String? _uploadStatus; // Variable to hold the upload status
 
   @override
   void dispose() {
@@ -30,7 +32,8 @@ class _ApolloHomeState extends State<ApolloHome> {
       body: Container(
         // background Image for the whole application
         decoration: const BoxDecoration(
-          image: DecorationImage(image: AssetImage('assets/photos/app_background.jpeg'),
+          image: DecorationImage(
+            image: AssetImage('assets/photos/app_background.jpeg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -52,11 +55,14 @@ class _ApolloHomeState extends State<ApolloHome> {
                 onPageChanged: (int index) {
                   setState(() {
                     currentIndex = index;
+                    if (index != 2) {
+                      // If not on the "Upload File" page, reset the upload status
+                      _uploadStatus = null;
+                    }
                   });
                 },
                 children: [
                   buildHistoryView(),
-
                   buildRecordView(context),
                   // ----------------------------------------------------------------
                   Container(
@@ -66,6 +72,17 @@ class _ApolloHomeState extends State<ApolloHome> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        if (_uploadStatus != null) ...[
+                          Text(
+                            _uploadStatus!,
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 243, 244, 243),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
                         const Text(
                           'Upload File',
                           style: TextStyle(color: Colors.white, fontSize: 20, decoration: TextDecoration.none),
@@ -83,8 +100,9 @@ class _ApolloHomeState extends State<ApolloHome> {
                               height: 200,
                               width: 200,
                               decoration: const BoxDecoration(
-                                image: DecorationImage(image:AssetImage('assets/photos/main_btn.png'), 
-                                  fit: BoxFit.fill
+                                image: DecorationImage(
+                                  image: AssetImage('assets/photos/main_btn.png'),
+                                  fit: BoxFit.fill,
                                 ),
                                 shape: BoxShape.circle,
                                 color: Color.fromARGB(255, 140, 80, 182),
@@ -110,34 +128,39 @@ class _ApolloHomeState extends State<ApolloHome> {
     );
   }
 
-
   void _openFileExplorer() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['mp3'],
+        allowedExtensions: ['mp3', 'wav'],
       );
 
       if (result != null) {
         setState(() {
-          _fileBytes = result.files.single.bytes;
-          _fileName = result.files.single.name;
+          String str = result.files[0].path.toString();
+          _fileBytes = File(str).readAsBytes();
+          _fileName = result.files[0].name;
+          _uploadStatus = 'File Uploaded'; // Update the upload status here
         });
         print('File picked: $_fileName');
         _saveFileBytesAsMP3(_fileBytes!, _fileName!);
       } else {
-        // User canceled the picker
+        setState(() {
+          _uploadStatus = 'No File Selected'; // Update the upload status here
+        });
         print('User canceled the picker');
       }
     } catch (e) {
+      setState(() {
+        _uploadStatus = 'Error while picking the file: $e'; // Update the upload status here
+      });
       print('Error while picking the file: $e');
     }
   }
 
-  void _saveFileBytesAsMP3(Uint8List fileBytes, String fileName) {
+  void _saveFileBytesAsMP3(Future<Uint8List> fileBytes, String fileName) {
     // Save the file bytes to a variable for later use
     // You can use this variable to pass the file to another program
-    final mp3File = fileBytes;
-    print('File saved as $fileName with ${mp3File.lengthInBytes} bytes.');
+    print('File saved as $fileName.');
   }
 }
