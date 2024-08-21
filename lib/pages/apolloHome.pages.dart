@@ -1,6 +1,7 @@
 import 'package:apollo_poc/widgets/buildDot.widgets.dart';
 import 'package:apollo_poc/widgets/buildHistoryView.widgets.dart';
 import 'package:apollo_poc/widgets/buildRecordView.widgets.dart';
+import 'package:apollo_poc/widgets/buildUploadView.widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:typed_data';
@@ -63,61 +64,9 @@ class _ApolloHomeState extends State<ApolloHome> {
                 },
                 children: [
                   buildHistoryView(),
-                  buildRecordView(context),
+                  BuildRecordView(),
                   // ----------------------------------------------------------------
-                  Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        if (_uploadStatus != null) ...[
-                          Text(
-                            _uploadStatus!,
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 243, 244, 243),
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                        const Text(
-                          'Upload File',
-                          style: TextStyle(color: Colors.white, fontSize: 20, decoration: TextDecoration.none),
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        GestureDetector(
-                          onTap: _openFileExplorer,
-                          child: Material(
-                            shape: const CircleBorder(),
-                            elevation: 8,
-                            child: Container(
-                              padding: const EdgeInsets.all(40),
-                              height: 200,
-                              width: 200,
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/photos/main_btn.png'),
-                                  fit: BoxFit.fill,
-                                ),
-                                shape: BoxShape.circle,
-                                color: Color.fromARGB(255, 140, 80, 182),
-                              ),
-                              child: const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 100,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  BuildUploadView(openFileExplorer: _openFileExplorer, uploadStatus: _uploadStatus,),
                 ],
               ),
             ),
@@ -162,5 +111,15 @@ class _ApolloHomeState extends State<ApolloHome> {
     // Save the file bytes to a variable for later use
     // You can use this variable to pass the file to another program
     print('File saved as $fileName.');
+  }
+
+  void setUploadStatusState(String status) {
+    setState(() {
+      _uploadStatus = status;
+    });
+  }
+
+  String getUploadStatus() {
+    return _uploadStatus?? 'No File Selected';
   }
 }
