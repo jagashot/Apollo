@@ -37,6 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.6
   file_picker: ^8.0.6
   avatar_glow: ^3.0.1
+  record: ^5.1.2
+  audioplayers: ^6.0.0
 
 dev_dependencies:
   flutter_test:
