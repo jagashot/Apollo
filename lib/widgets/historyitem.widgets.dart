@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart'; // הוספת חבילת PDF
+import 'package:flutter/services.dart' show rootBundle; // לקרוא מה-assets
 
 class HistoryItem extends StatelessWidget {
   final String songTitle;
@@ -15,7 +17,15 @@ class HistoryItem extends StatelessWidget {
         elevation: 5,
         child: ListTile(
           minTileHeight: 100,
-          onTap: () {},
+          onTap: () async {
+            // Load and display the PDF when tapped
+            final pdfPath = 'assets/photos/score.pdf'; // נתיב לקובץ ה-PDF
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => PDFViewerScreen(pdfPath: pdfPath),
+              ),
+            );
+          },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -40,6 +50,25 @@ class HistoryItem extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// מסך חדש להצגת ה-PDF
+class PDFViewerScreen extends StatelessWidget {
+  final String pdfPath;
+
+  const PDFViewerScreen({Key? key, required this.pdfPath}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('PDF Viewer'),
+      ),
+      body: PDFView(
+        filePath: pdfPath,
       ),
     );
   }
