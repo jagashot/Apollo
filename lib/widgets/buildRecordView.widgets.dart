@@ -3,6 +3,9 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:record/record.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:http_parser/http_parser.dart';
 
 class BuildRecordView extends StatefulWidget {
   const BuildRecordView({super.key});
@@ -27,7 +30,6 @@ class _BuildRecordViewState extends State<BuildRecordView> {
   Future<void> _startRecording() async {
     try {
       if (await _recorder.hasPermission()) {
-        // Store the recording in the app's local directory
         String path = '${Directory.systemTemp.path}/recording.m4a';
 
         RecordConfig config = const RecordConfig(
@@ -70,6 +72,40 @@ class _BuildRecordViewState extends State<BuildRecordView> {
     }
   }
 
+ Future<void> _sendFileToServer() async {
+    if(_filePath == null) return;
+    final url = Uri.parse('http://localhost:3000/sendFileToModel');
+    final request = http.MultipartRequest('POST', url);
+    request.files.add(await http.MultipartFile.fromPath(
+      'file', 
+      _filePath!, 
+      contentType: MediaType('audio', 'm4a'),
+    ));
+
+    try {
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        final bytes = await response.stream.toBytes();
+        var midiFilePath = '${Directory.systemTemp.path}/output.midi';
+
+        final file = File(midiFilePath);
+        await file.writeAsBytes(bytes);
+
+        print('MIDI file downloaded to: $midiFilePath');
+
+        // Trigger UI update for downloading the MIDI file
+        setState(() {
+          midiFilePath = midiFilePath;
+        });
+      } else {
+        print('Failed to download MIDI file.');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -92,6 +128,7 @@ class _BuildRecordViewState extends State<BuildRecordView> {
               onTap: () async {
                 if (_isRecording) {
                   await _stopRecording();
+                  await _sendFileToServer();  // Send the file to the server after recording
                 } else {
                   await _startRecording();
                 }
